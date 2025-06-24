@@ -11,17 +11,22 @@ const app = express()
 // Connect to MongoDB Atlas
 connectDB()
 
-// CORS Configuration - FIXED FOR PRODUCTION
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://rohit-fund-project.vercel.app",
-    "https://rohit-fund-project-*.vercel.app" // For preview deployments
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}))
+// ULTRA-SIMPLE CORS - NO RESTRICTIONS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200)
+  } else {
+    next()
+  }
+})
+
+// Basic CORS as backup
+app.use(cors())
 
 // Middleware
 app.use(express.json())
@@ -51,6 +56,4 @@ app.get("/health", (req, res) => {
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`🌐 API URL: http://localhost:${PORT}`)
-  console.log(`📊 Health Check: http://localhost:${PORT}/health`)
 })

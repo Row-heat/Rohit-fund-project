@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useContext, useState, useEffect } from "react"
 import axios from "axios"
 
@@ -18,6 +16,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // FIXED: Set base URL for production
+    const baseURL = process.env.REACT_APP_API_URL || "https://rohit-fund-project.onrender.com"
+    axios.defaults.baseURL = baseURL
+    axios.defaults.timeout = 30000
+    
+    console.log("🌐 API Base URL:", baseURL)
+
     const token = localStorage.getItem("token")
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
@@ -32,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get("/api/auth/me")
       setUser(response.data.user)
     } catch (error) {
+      console.error("Fetch user error:", error)
       localStorage.removeItem("token")
       delete axios.defaults.headers.common["Authorization"]
     } finally {
@@ -50,6 +56,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true }
     } catch (error) {
+      console.error("Login error:", error)
       return {
         success: false,
         message: error.response?.data?.message || "Login failed",
@@ -57,15 +64,10 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Updated register function with direct backend URL
   const register = async (email, password) => {
     try {
-      const data = { email, password }
-      const res = await axios.post(
-        "https://rohit-fund-project.onrender.com/api/auth/register",
-        data
-      )
-      const { token, user } = res.data
+      const response = await axios.post("/api/auth/register", { email, password })
+      const { token, user } = response.data
 
       localStorage.setItem("token", token)
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
@@ -73,6 +75,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true }
     } catch (error) {
+      console.error("Register error:", error)
       return {
         success: false,
         message: error.response?.data?.message || "Registration failed",
