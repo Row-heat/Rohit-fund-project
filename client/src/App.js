@@ -9,6 +9,7 @@ import FundDetail from "./pages/FundDetail"
 import SavedFunds from "./pages/SavedFunds"
 import Navbar from "./components/Navbar"
 import "./App.css"
+import Dashboard from "./pages/Dashboard"
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
@@ -64,6 +65,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SavedFunds />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
                 </ProtectedRoute>
               }
             />

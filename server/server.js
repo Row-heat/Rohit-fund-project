@@ -5,7 +5,7 @@ require("dotenv").config()
 // Import database connection
 const connectDB = require("./config/database")
 
-const authRoutes = require("./routes/auth")
+const authRoutes = require('./routes/auth');
 const fundRoutes = require("./routes/funds")
 
 const app = express()
@@ -18,7 +18,7 @@ app.use(cors())
 app.use(express.json())
 
 // Routes
-app.use("/api/auth", authRoutes)
+app.use('/api/auth', authRoutes);
 app.use("/api/funds", fundRoutes)
 
 // Test route

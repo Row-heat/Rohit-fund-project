@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom" // <-- import useNavigate
 import { useAuth } from "../context/AuthContext"
 
 const Register = () => {
@@ -13,6 +13,7 @@ const Register = () => {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const { register } = useAuth()
+  const navigate = useNavigate() // <-- initialize navigate
 
   const handleChange = (e) => {
     setFormData({
@@ -42,8 +43,12 @@ const Register = () => {
 
     if (!result.success) {
       setError(result.message)
+      setLoading(false)
+      return
     }
 
+    // Redirect to login page after successful registration
+    navigate("/login")
     setLoading(false)
   }
 
