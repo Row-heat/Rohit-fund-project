@@ -57,11 +57,12 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  // Updated register function with direct backend URL
   const register = async (email, password) => {
     try {
       const data = { email, password }
       const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/auth/register`,
+        "https://rohit-fund-project.onrender.com/api/auth/register",
         data
       )
       const { token, user } = res.data
