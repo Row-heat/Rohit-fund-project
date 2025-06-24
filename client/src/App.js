@@ -1,5 +1,3 @@
-"use client"
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { AuthProvider, useAuth } from "./context/AuthContext"
 import Login from "./pages/Login"
@@ -9,7 +7,6 @@ import FundDetail from "./pages/FundDetail"
 import SavedFunds from "./pages/SavedFunds"
 import Navbar from "./components/Navbar"
 import "./App.css"
-import Dashboard from "./pages/Dashboard"
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
@@ -65,14 +62,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SavedFunds />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
                 </ProtectedRoute>
               }
             />
