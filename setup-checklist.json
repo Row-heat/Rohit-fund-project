@@ -1,0 +1,39 @@
+{
+  "setup_checklist": {
+    "prerequisites": [
+      "✅ Node.js installed (v16+)",
+      "✅ MongoDB running (local or Atlas)",
+      "✅ Code editor ready",
+      "✅ Terminal/Command prompt access"
+    ],
+    "backend_setup": [
+      "✅ Create server folder",
+      "✅ Copy all server files",
+      "✅ Run npm install",
+      "✅ Create .env file",
+      "✅ Start MongoDB",
+      "✅ Test server (npm run dev)"
+    ],
+    "frontend_setup": [
+      "✅ Create client folder",
+      "✅ Initialize React app",
+      "✅ Install dependencies",
+      "✅ Copy all client files",
+      "✅ Start frontend (npm start)"
+    ],
+    "testing": [
+      "✅ Run API integration tests",
+      "✅ Test user registration",
+      "✅ Test fund search",
+      "✅ Test fund saving",
+      "✅ Test responsive design"
+    ],
+    "deployment": [
+      "✅ Choose deployment platform",
+      "✅ Set environment variables",
+      "✅ Deploy backend",
+      "✅ Deploy frontend",
+      "✅ Test production app"
+    ]
+  }
+}
