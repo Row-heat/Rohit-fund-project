@@ -2,10 +2,8 @@ const express = require("express")
 const cors = require("cors")
 require("dotenv").config()
 
-// Import database connection
 const connectDB = require("./config/database")
-
-const authRoutes = require('./routes/auth');
+const authRoutes = require("./routes/auth")
 const fundRoutes = require("./routes/funds")
 
 const app = express()
@@ -13,12 +11,23 @@ const app = express()
 // Connect to MongoDB Atlas
 connectDB()
 
+// CORS Configuration - FIXED FOR PRODUCTION
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://rohit-fund-project.vercel.app",
+    "https://rohit-fund-project-*.vercel.app" // For preview deployments
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+
 // Middleware
-app.use(cors())
 app.use(express.json())
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes)
 app.use("/api/funds", fundRoutes)
 
 // Test route

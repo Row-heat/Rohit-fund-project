@@ -2,29 +2,33 @@ import axios from "axios"
 
 class ApiService {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || ""
+    // FIXED: Use production backend URL
+    this.baseURL = process.env.REACT_APP_API_URL || "https://rohit-fund-project.onrender.com"
+    
+    // Set default axios config
+    axios.defaults.baseURL = this.baseURL
+    axios.defaults.timeout = 30000 // 30 seconds for slow Render startup
   }
 
-  // Search funds using your API
   async searchFunds(searchTerm) {
     try {
       console.log(`🔍 Searching funds: "${searchTerm}"`)
+      console.log(`🌐 Using API: ${this.baseURL}`)
 
-      const response = await axios.get(`${this.baseURL}/api/funds/search`, {
+      const response = await axios.get(`/api/funds/search`, {
         params: { q: searchTerm },
-        timeout: 15000,
+        timeout: 30000,
       })
 
       console.log(`✅ Search completed: ${response.data.count} results`)
       return response.data
     } catch (error) {
       console.error("❌ Search failed:", error.message)
-
-      // Fallback to direct mfapi.in call if your API fails
       console.log("🔄 Trying fallback API...")
+      
       try {
         const fallbackResponse = await axios.get("https://api.mfapi.in/mf", {
-          timeout: 10000,
+          timeout: 15000,
         })
 
         const filteredFunds = fallbackResponse.data.filter((fund) =>
@@ -43,25 +47,23 @@ class ApiService {
     }
   }
 
-  // Get fund details using your API
   async getFundDetails(schemeCode) {
     try {
       console.log(`🔍 Getting fund details: ${schemeCode}`)
 
-      const response = await axios.get(`${this.baseURL}/api/funds/details/${schemeCode}`, {
-        timeout: 10000,
+      const response = await axios.get(`/api/funds/details/${schemeCode}`, {
+        timeout: 20000,
       })
 
       console.log("✅ Fund details received")
       return response.data
     } catch (error) {
       console.error("❌ Fund details failed:", error.message)
-
-      // Fallback to direct mfapi.in call
       console.log("🔄 Trying fallback API for fund details...")
+      
       try {
         const fallbackResponse = await axios.get(`https://api.mfapi.in/mf/${schemeCode}`, {
-          timeout: 10000,
+          timeout: 15000,
         })
 
         return {
@@ -75,10 +77,9 @@ class ApiService {
     }
   }
 
-  // Save fund (uses existing auth endpoints - UNCHANGED)
   async saveFund(schemeCode, schemeName) {
     try {
-      const response = await axios.post(`${this.baseURL}/api/funds/save`, {
+      const response = await axios.post(`/api/funds/save`, {
         schemeCode,
         schemeName,
       })
@@ -88,20 +89,18 @@ class ApiService {
     }
   }
 
-  // Get saved funds (UNCHANGED)
   async getSavedFunds() {
     try {
-      const response = await axios.get(`${this.baseURL}/api/funds`)
+      const response = await axios.get(`/api/funds`)
       return response.data
     } catch (error) {
       throw new Error("Failed to fetch saved funds")
     }
   }
 
-  // Remove saved fund (UNCHANGED)
   async removeFund(fundId) {
     try {
-      const response = await axios.delete(`${this.baseURL}/api/funds/${fundId}`)
+      const response = await axios.delete(`/api/funds/${fundId}`)
       return response.data
     } catch (error) {
       throw new Error("Failed to remove fund")
