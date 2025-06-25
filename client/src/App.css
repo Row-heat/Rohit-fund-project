@@ -410,3 +410,146 @@
     border: 2px solid #000;
   }
 }
+
+/* --- Responsive Enhancements for App-like Feel --- */
+
+/* Make main app container more flexible */
+.App {
+  background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Add subtle shadow and rounded corners to cards on all screens */
+.fund-card,
+.info-item,
+.auth-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.07);
+}
+
+/* Make navbar sticky and more touch-friendly */
+.navbar {
+  border-bottom: 1px solid #e5e7eb;
+  touch-action: pan-y;
+}
+
+/* Improve button appearance for touch devices */
+button,
+input[type="submit"] {
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+button:active,
+input[type="submit"]:active {
+  background: #475ad7;
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.12);
+}
+
+/* Make input fields more touch-friendly */
+input,
+select,
+textarea {
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+/* Responsive font sizes for headings */
+h1, .search-title, .fund-detail-title {
+  font-size: clamp(1.5rem, 6vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* Responsive padding for main containers */
+@media (max-width: 480px) {
+  .App,
+  .fund-detail-container,
+  .auth-container,
+  .search-container {
+    padding: 8px !important;
+  }
+  .fund-card,
+  .info-item,
+  .auth-card {
+    padding: 12px !important;
+  }
+}
+
+/* Add a bottom nav bar for mobile app-like feel */
+@media (max-width: 600px) {
+  .navbar {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    width: 100vw;
+    z-index: 1000;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: none;
+    background: #fff;
+    box-shadow: 0 -2px 8px rgba(59, 130, 246, 0.06);
+    padding: 0;
+  }
+  .navbar-content {
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    align-items: center;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+  .navbar-nav {
+    flex-direction: row !important;
+    gap: 0 !important;
+    width: 100vw;
+    justify-content: space-around !important;
+  }
+  .navbar-link {
+    flex: 1 1 0;
+    justify-content: center;
+    min-width: 0;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border-radius: 0;
+    background: none;
+    border: none;
+    text-align: center;
+  }
+}
+
+/* Make cards and containers more compact on small screens */
+@media (max-width: 400px) {
+  .fund-card,
+  .info-item,
+  .auth-card {
+    padding: 8px !important;
+    font-size: 0.95rem;
+  }
+  .search-title,
+  .fund-detail-title {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Add a little animation for card hover on desktop */
+@media (hover: hover) and (pointer: fine) {
+  .fund-card:hover,
+  .info-item:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.13);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+}
