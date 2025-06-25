@@ -581,6 +581,36 @@
   }
 }
 
+/* Always show logout button on mobile and make it prominent */
+@media screen and (max-width: 600px) {
+  .navbar-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .navbar-link[href*="logout"],
+  .navbar-link:last-child {
+    display: block !important;
+    width: 100%;
+    min-width: 120px;
+    max-width: 200px;
+    margin: 8px auto 0 auto;
+    background-color: #ef4444;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 14px 0;
+    text-align: center;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.08);
+  }
+  .navbar-link[href*="logout"]:hover,
+  .navbar-link:last-child:hover {
+    background-color: #dc2626;
+    color: #fff !important;
+  }
+}
+
 /* Ensure no horizontal scrolling */
 *,
 *::before,
