@@ -89,7 +89,6 @@
   background-color: rgba(59, 130, 246, 0.1);
 }
 
-/* Ensure logout button stays visible */
 .navbar-link[href*="logout"],
 .navbar-link:last-child {
   background-color: #ef4444;
@@ -405,7 +404,6 @@
   }
 }
 
-/* Mobile-first approach - Extra small screens */
 @media screen and (max-width: 320px) {
   .navbar-content {
     flex-direction: column;
@@ -444,7 +442,6 @@
   }
 }
 
-/* Small mobile screens */
 @media screen and (max-width: 480px) {
   .navbar {
     padding: 8px 0;
@@ -516,7 +513,6 @@
   }
 }
 
-/* Medium screens - tablets */
 @media screen and (min-width: 481px) and (max-width: 768px) {
   .navbar-content {
     flex-direction: row;
@@ -536,7 +532,6 @@
   }
 }
 
-/* Large tablets and small desktops */
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   .navbar-content {
     padding: 0 24px;
@@ -557,7 +552,6 @@
   }
 }
 
-/* Desktop screens */
 @media screen and (min-width: 1025px) {
   .navbar-content {
     padding: 0 32px;
@@ -581,7 +575,6 @@
   }
 }
 
-/* Always show logout button on mobile and make it prominent */
 @media screen and (max-width: 600px) {
   .navbar-nav {
     flex-wrap: wrap;
@@ -611,7 +604,6 @@
   }
 }
 
-/* Ensure no horizontal scrolling */
 *,
 *::before,
 *::after {
@@ -627,7 +619,6 @@ body {
   padding: 0;
 }
 
-/* Touch-friendly enhancements */
 @media (hover: none) and (pointer: coarse) {
   .fund-card:hover {
     transform: none;
@@ -649,7 +640,6 @@ body {
   }
 }
 
-/* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -661,7 +651,6 @@ body {
   }
 }
 
-/* High contrast mode support */
 @media (prefers-contrast: high) {
   .fund-card {
     border: 2px solid #000000;
@@ -672,7 +661,6 @@ body {
   }
 }
 
-/* Landscape orientation on mobile */
 @media screen and (max-width: 768px) and (orientation: landscape) {
   .navbar {
     padding: 6px 0;
@@ -693,7 +681,6 @@ body {
   }
 }
 
-/* Print styles */
 @media print {
   .navbar {
     display: none;
