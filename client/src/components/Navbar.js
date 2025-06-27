@@ -52,7 +52,6 @@ const Navbar = () => {
           aria-label="Menu"
           onClick={() => setMenuOpen((v) => !v)}
           style={{
-            display: "none", // will be shown by CSS on mobile
             background: "none",
             border: "none",
             fontSize: "2rem",
