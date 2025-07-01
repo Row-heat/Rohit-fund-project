@@ -16,12 +16,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // FIXED: Set base URL for production
     const baseURL = process.env.REACT_APP_API_URL || "https://rohit-fund-project.onrender.com"
     axios.defaults.baseURL = baseURL
     axios.defaults.timeout = 30000
-    
-    console.log("🌐 API Base URL:", baseURL)
 
     const token = localStorage.getItem("token")
     if (token) {
@@ -30,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setLoading(false)
     }
+    // eslint-disable-next-line
   }, [])
 
   const fetchUser = async () => {
@@ -40,6 +38,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Fetch user error:", error)
       localStorage.removeItem("token")
       delete axios.defaults.headers.common["Authorization"]
+      setUser(null)
     } finally {
       setLoading(false)
     }
@@ -97,5 +96,15 @@ export const AuthProvider = ({ children }) => {
     loading,
   }
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={value}>
+      {loading ? (
+        <div style={{ color: "white", textAlign: "center", marginTop: "100px" }}>
+          Loading...
+        </div>
+      ) : (
+        children
+      )}
+    </AuthContext.Provider>
+  )
 }
