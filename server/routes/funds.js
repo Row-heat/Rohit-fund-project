@@ -2,6 +2,7 @@ const express = require("express")
 const User = require("../models/User")
 const auth = require("../middleware/auth")
 const fundService = require("../services/fundService")
+const FundData = require("../models/FundData")
 
 const router = express.Router()
 
@@ -103,6 +104,45 @@ router.delete("/:id", auth, async (req, res) => {
     res.json({ message: "Fund removed successfully", savedFunds: user.savedFunds })
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message })
+  }
+})
+
+// GET /api/fund/category
+router.get("/category", async (req, res) => {
+  try {
+    const data = await FundData.find(
+      { category: { $exists: true }, percentage: { $exists: true } },
+      { category: 1, percentage: 1, _id: 0 }
+    )
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch category data" })
+  }
+})
+
+// GET /api/fund/monthly
+router.get("/monthly", async (req, res) => {
+  try {
+    const data = await FundData.find(
+      { month: { $exists: true }, investment: { $exists: true } },
+      { month: 1, investment: 1, _id: 0 }
+    )
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch monthly data" })
+  }
+})
+
+// GET /api/fund/nav
+router.get("/nav", async (req, res) => {
+  try {
+    const data = await FundData.find(
+      { date: { $exists: true }, nav: { $exists: true } },
+      { date: 1, nav: 1, _id: 0 }
+    )
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch NAV data" })
   }
 })
 

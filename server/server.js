@@ -5,6 +5,7 @@ require("dotenv").config()
 const connectDB = require("./config/database")
 const authRoutes = require("./routes/auth")
 const fundRoutes = require("./routes/funds")
+const analyticsFundRoutes = require("./routes/fund") // <-- ADD THIS LINE
 
 const app = express()
 
@@ -34,6 +35,7 @@ app.use(express.json())
 // Routes
 app.use("/api/auth", authRoutes)
 app.use("/api/funds", fundRoutes)
+app.use("/api/fund", analyticsFundRoutes) // <-- ADD THIS LINE
 
 // Test route
 app.get("/", (req, res) => {
