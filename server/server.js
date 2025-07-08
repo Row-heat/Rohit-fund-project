@@ -9,32 +9,29 @@ const analyticsFundRoutes = require("./routes/fund");
 
 const app = express();
 
-// Connect to MongoDB Atlas
+// ✅ Connect to MongoDB
 connectDB();
 
-// ULTRA-SIMPLE CORS - NO RESTRICTIONS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://rohit-fund-project.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+// ✅ Proper CORS middleware
+app.use(cors({
+  origin: 'https://rohit-fund-project.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
-// Middleware
+// ✅ Ensure OPTIONS requests are handled properly
+app.options('*', cors());
+
+// ✅ Middleware
 app.use(express.json());
 
-// Routes
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/funds", fundRoutes);
 app.use("/api/fund", analyticsFundRoutes);
 
-// Test route
+// ✅ Test route
 app.get("/", (req, res) => {
   res.json({
     message: " Mutual Fund API is running!",
@@ -43,7 +40,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check route
+// ✅ Health check route
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",

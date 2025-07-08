@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import apiService from "../services/apiService"
 
@@ -10,19 +10,28 @@ const Landing = () => {
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(false)
   const [apiStatus, setApiStatus] = useState(null)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const debounceTimer = useRef(null)
+
   const navigate = useNavigate()
 
   const searchFunds = async (term) => {
-    if (!term.trim()) return
+    if (!term.trim()) {
+      setFunds([])
+      setSearched(false)
+      setShowDropdown(false)
+      setApiStatus(null)
+      return
+    }
 
     setLoading(true)
     setApiStatus(null)
 
     try {
       const result = await apiService.searchFunds(term)
-
       setFunds(result.data || [])
       setSearched(true)
+      setShowDropdown(true)
 
       // Show API status
       if (result.fallback) {
@@ -33,24 +42,45 @@ const Landing = () => {
     } catch (error) {
       console.error("Error searching funds:", error)
       setFunds([])
+      setSearched(true)
+      setShowDropdown(true)
       setApiStatus("Search failed. Please try again.")
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    searchFunds(searchTerm)
-  }
+  // Debounced search effect - triggers 350ms after user stops typing
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current)
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      if (searchTerm.trim()) {
+        searchFunds(searchTerm)
+      } else {
+        setFunds([])
+        setSearched(false)
+        setShowDropdown(false)
+      }
+    }, 350)
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current)
+      }
+    }
+  }, [searchTerm])
 
   const handleFundClick = (schemeCode) => {
     navigate(`/fund/${schemeCode}`)
+    setShowDropdown(false)
   }
 
   const handleSuggestionClick = (term) => {
     setSearchTerm(term)
-    searchFunds(term)
+    // searchFunds will be called automatically via useEffect
   }
 
   return (
@@ -91,8 +121,25 @@ const Landing = () => {
           Search from thousands of mutual funds using our integrated API and build your investment portfolio
         </p>
 
-        <form onSubmit={handleSearch} style={{ maxWidth: "600px", margin: "0 auto" }}>
+        {/* Search Form - NO SUBMIT HANDLER, NO BUTTON */}
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          style={{ maxWidth: "600px", margin: "0 auto", position: "relative" }}
+        >
           <div style={{ position: "relative" }}>
+            {/* Search Icon/Loading Spinner */}
+            <div
+              style={{
+                position: "absolute",
+                left: "16px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+              }}
+            >
+              {loading ? <span style={{ fontSize: "20px" }}>🔄</span> : <span style={{ fontSize: "20px" }}>🔍</span>}
+            </div>
+
             <input
               type="text"
               placeholder="Search mutual funds (try 'SBI', 'HDFC', 'ICICI')..."
@@ -100,44 +147,122 @@ const Landing = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
                 width: "100%",
-                padding: "16px 24px",
+                padding: "16px 24px 16px 50px", // Left padding for icon, no right padding for button
                 fontSize: "18px",
                 border: "2px solid #e5e7eb",
                 borderRadius: "12px",
                 transition: "all 0.3s ease",
-                paddingRight: "120px",
               }}
               onFocus={(e) => {
                 e.target.style.borderColor = "#667eea"
                 e.target.style.boxShadow = "0 0 0 3px rgba(102, 126, 234, 0.1)"
+                if (searchTerm.trim() && funds.length > 0) {
+                  setShowDropdown(true)
+                }
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = "#e5e7eb"
                 e.target.style.boxShadow = "none"
+                setTimeout(() => setShowDropdown(false), 200)
               }}
             />
-            <button
-              type="submit"
-              disabled={loading}
+
+            {/* SEARCH BUTTON COMPLETELY REMOVED */}
+          </div>
+
+          {/* Real-time Dropdown Results */}
+          {showDropdown && searchTerm.trim() && (
+            <div
               style={{
                 position: "absolute",
-                right: "8px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "#667eea",
-                color: "white",
-                border: "none",
-                padding: "10px 20px",
-                borderRadius: "8px",
-                fontSize: "16px",
-                fontWeight: "600",
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.6 : 1,
+                top: "100%",
+                left: "0",
+                right: "0",
+                background: "white",
+                borderRadius: "12px",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+                border: "2px solid #e5e7eb",
+                marginTop: "8px",
+                maxHeight: "400px",
+                overflowY: "auto",
+                zIndex: 1000,
               }}
             >
-              {loading ? "🔄" : "🔍 Search"}
-            </button>
-          </div>
+              {loading && (
+                <div style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>
+                  <div className="spinner"></div>
+                  <p>Searching funds...</p>
+                </div>
+              )}
+
+              {!loading && funds.length === 0 && searched && (
+                <div style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>
+                  <p style={{ fontSize: "16px", marginBottom: "8px" }}>😔 No funds found</p>
+                  <p style={{ fontSize: "14px" }}>Try different keywords</p>
+                </div>
+              )}
+
+              {!loading && funds.length > 0 && (
+                <>
+                  <div
+                    style={{
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #e5e7eb",
+                      fontSize: "14px",
+                      color: "#6b7280",
+                      fontWeight: "500",
+                    }}
+                  >
+                    📊 {funds.length} funds found
+                  </div>
+                  {funds.slice(0, 10).map((fund) => (
+                    <div
+                      key={fund.schemeCode}
+                      style={{
+                        padding: "16px",
+                        borderBottom: "1px solid #f3f4f6",
+                        cursor: "pointer",
+                        transition: "background-color 0.2s ease",
+                      }}
+                      onClick={() => handleFundClick(fund.schemeCode)}
+                      onMouseOver={(e) => {
+                        e.target.style.backgroundColor = "#f8fafc"
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.backgroundColor = "transparent"
+                      }}
+                    >
+                      <h4
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "600",
+                          color: "#1f2937",
+                          marginBottom: "4px",
+                          lineHeight: "1.3",
+                        }}
+                      >
+                        {fund.schemeName}
+                      </h4>
+                      <p style={{ fontSize: "14px", color: "#6b7280" }}>🏷️ Code: {fund.schemeCode}</p>
+                    </div>
+                  ))}
+                  {funds.length > 10 && (
+                    <div
+                      style={{
+                        padding: "12px 16px",
+                        textAlign: "center",
+                        fontSize: "14px",
+                        color: "#6b7280",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Showing first 10 results. Total: {funds.length} funds
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </form>
 
         {/* API Status Indicator */}
@@ -163,7 +288,7 @@ const Landing = () => {
         )}
       </div>
 
-      {loading && (
+      {loading && !showDropdown && (
         <div
           style={{
             background: "rgba(255,255,255,0.95)",
@@ -178,7 +303,7 @@ const Landing = () => {
         </div>
       )}
 
-      {!loading && searched && (
+      {!loading && searched && !showDropdown && (
         <div
           style={{
             background: "rgba(255,255,255,0.95)",
