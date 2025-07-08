@@ -1,50 +1,47 @@
-const express = require("express")
-const cors = require("cors")
-require("dotenv").config()
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
-const connectDB = require("./config/database")
-const authRoutes = require("./routes/auth")
-const fundRoutes = require("./routes/funds")
-const analyticsFundRoutes = require("./routes/fund") // <-- ADD THIS LINE
+const connectDB = require("./config/database");
+const authRoutes = require("./routes/auth");
+const fundRoutes = require("./routes/funds");
+const analyticsFundRoutes = require("./routes/fund");
 
-const app = express()
+const app = express();
 
 // Connect to MongoDB Atlas
-connectDB()
+connectDB();
 
 // ULTRA-SIMPLE CORS - NO RESTRICTIONS
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-  res.header('Access-Control-Allow-Credentials', 'true')
+  res.header('Access-Control-Allow-Origin', 'https://rohit-fund-project.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200)
+    res.sendStatus(200);
   } else {
-    next()
+    next();
   }
-})
-
-// Basic CORS as backup
-app.use(cors())
+});
 
 // Middleware
-app.use(express.json())
+app.use(express.json());
 
 // Routes
-app.use("/api/auth", authRoutes)
-app.use("/api/funds", fundRoutes)
-app.use("/api/fund", analyticsFundRoutes) // <-- ADD THIS LINE
+app.use("/api/auth", authRoutes);
+app.use("/api/funds", fundRoutes);
+app.use("/api/fund", analyticsFundRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.json({
-    message: "🏦 Mutual Fund API is running!",
+    message: " Mutual Fund API is running!",
     database: "MongoDB Atlas Connected",
     timestamp: new Date().toISOString(),
-  })
-})
+  });
+});
 
 // Health check route
 app.get("/health", (req, res) => {
@@ -52,10 +49,10 @@ app.get("/health", (req, res) => {
     status: "healthy",
     database: "connected",
     timestamp: new Date().toISOString(),
-  })
-})
+  });
+});
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-})
+  console.log(` Server running on port ${PORT}`);
+});
