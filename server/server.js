@@ -12,16 +12,16 @@ const app = express();
 // ✅ Connect to MongoDB
 connectDB();
 
-// ✅ Proper CORS middleware
-app.use(cors({
+// ✅ Proper CORS middleware setup
+const corsOptions = {
   origin: 'https://rohit-fund-project.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
 
-// ✅ Ensure OPTIONS requests are handled properly
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // ✅ Handle preflight requests with same config
 
 // ✅ Middleware
 app.use(express.json());
@@ -34,7 +34,7 @@ app.use("/api/fund", analyticsFundRoutes);
 // ✅ Test route
 app.get("/", (req, res) => {
   res.json({
-    message: " Mutual Fund API is running!",
+    message: "Mutual Fund API is running!",
     database: "MongoDB Atlas Connected",
     timestamp: new Date().toISOString(),
   });
@@ -49,7 +49,8 @@ app.get("/health", (req, res) => {
   });
 });
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(` Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
