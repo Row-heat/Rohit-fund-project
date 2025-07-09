@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const baseURL = process.env.REACT_APP_API_URL || "https://rohit-fund-project.onrender.com"
+    const baseURL = process.env.REACT_APP_API_URL || "https://rohit-fund-project-2.onrender.com"
     axios.defaults.baseURL = baseURL
     axios.defaults.timeout = 30000
     axios.defaults.withCredentials = true // ✅ VERY IMPORTANT
