@@ -9,19 +9,19 @@ const analyticsFundRoutes = require("./routes/fund");
 
 const app = express();
 
-// ✅ Correct CORS setup for Render + Vercel
+// ✅ CORS for frontend
+const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:3000";
+
 app.use(cors({
-  origin: "https://rohit-fund-project.vercel.app", // ✅ Frontend domain
-  credentials: true, // ✅ Allow cookies/headers with credentials
+  origin: allowedOrigin,
+  credentials: true,
 }));
 
-// ✅ Parse JSON requests
-app.use(express.json());
+app.use(express.json()); // ✅ Parse JSON
 
-// ✅ Connect to MongoDB
-connectDB();
+connectDB(); // ✅ Connect MongoDB
 
-// ✅ Define routes
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/funds", fundRoutes);
 app.use("/api/fund", analyticsFundRoutes);
@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// ✅ Health check route
+// ✅ Health check
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",
