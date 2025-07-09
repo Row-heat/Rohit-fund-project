@@ -5,7 +5,7 @@ require("dotenv").config();
 const connectDB = require("./config/database");
 const authRoutes = require("./routes/auth");
 const fundRoutes = require("./routes/funds");
-const analyticsFundRoutes = require("./routes/fund");
+const analyticsFundRoutes = require("./routes/funds"); // ✅ FIXED
 
 const app = express();
 
