@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./config/database");
@@ -9,27 +8,22 @@ const analyticsFundRoutes = require("./routes/fund");
 
 const app = express();
 
-// ✅ Fix: Manually set CORS headers for Render
+// ✅ Custom CORS Middleware for Render + Vercel
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://rohit-fund-project.vercel.app");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  res.header("Access-Control-Allow-Origin", "https://rohit-fund-project.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
   next();
 });
 
-// ✅ Connect to MongoDB
+// ✅ Connect MongoDB
 connectDB();
 
-// ✅ Express Middlewares
-app.use(cors({
-  origin: 'https://rohit-fund-project.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
-app.options('*', cors());
-
+// ✅ Parse incoming JSON
 app.use(express.json());
 
 // ✅ Routes
@@ -37,7 +31,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/funds", fundRoutes);
 app.use("/api/fund", analyticsFundRoutes);
 
-// ✅ Test Routes
+// ✅ Root route
 app.get("/", (req, res) => {
   res.json({
     message: "Mutual Fund API is running!",
@@ -46,6 +40,7 @@ app.get("/", (req, res) => {
   });
 });
 
+// ✅ Health check
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",
