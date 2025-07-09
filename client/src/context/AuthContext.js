@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     const baseURL = process.env.REACT_APP_API_URL || "https://rohit-fund-project.onrender.com"
     axios.defaults.baseURL = baseURL
     axios.defaults.timeout = 30000
+    axios.defaults.withCredentials = true // ✅ VERY IMPORTANT
 
     const token = localStorage.getItem("token")
     if (token) {
@@ -32,7 +33,9 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get("/api/auth/me")
+      const response = await axios.get("/api/auth/me", {
+        withCredentials: true, // ✅ Ensure CORS works
+      })
       setUser(response.data.user)
     } catch (error) {
       console.error("Fetch user error:", error)
@@ -46,7 +49,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post("/api/auth/login", { email, password })
+      const response = await axios.post(
+        "/api/auth/login",
+        { email, password },
+        { withCredentials: true } // ✅ Required for cookies/token
+      )
       const { token, user } = response.data
 
       localStorage.setItem("token", token)
@@ -65,7 +72,11 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password) => {
     try {
-      const response = await axios.post("/api/auth/register", { email, password })
+      const response = await axios.post(
+        "/api/auth/register",
+        { email, password },
+        { withCredentials: true } // ✅ Required for CORS success
+      )
       const { token, user } = response.data
 
       localStorage.setItem("token", token)
